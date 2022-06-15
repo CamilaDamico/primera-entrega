@@ -1,17 +1,16 @@
-const productos = [
-	{id: 1, nombre: "Collar", precio: 15, stock: 5}, 
-	{id: 2, nombre: "Jabon", precio: 4, stock: 0},
-	{id: 3, nombre: "alimento", precio: 26, stock: 4}
-];
-
-
-function calcularSubtotal () {
-
+function obtenerProductosEnStock (productos){
 	let productosEnStock = productos.filter((prod) => {
 		if (prod.stock > 0){
 			return true
 		}
+
 	})
+	return productosEnStock;
+} 
+
+function calcularSubtotal (productos) {
+	const productosEnStock = obtenerProductosEnStock(productos)
+
 	for (const producto of productosEnStock){
 		console.log(`id: ${producto.id}, producto: ${producto.nombre}, precio: $${producto.precio}`)
 	}
@@ -22,21 +21,17 @@ function calcularSubtotal () {
 	let productoIngresado = prompt("Ingrese codigo de producto")
 
 	while(productoIngresado !== "s") {
-		switch(productoIngresado) {
-			case "1":
-				cantidad = prompt("Cuantos desea?")
-				subtotal += cantidad * productos[0].precio
-				break;
-			case "2":
-				cantidad = prompt("Cuantos desea?")
-				subtotal += cantidad * productos[1].precio
-				break;
-			case "3":
-				cantidad = prompt("Cuantos desea?")
-				subtotal += cantidad * productos[2].precio
-				break;
-		}
-		productoIngresado = prompt("Ingrese codigo de producto \n si no quiere ingresar mas productos, ingrese s")	
+		
+		let productoSeleccionado = productosEnStock.find((prod) =>{
+			if (prod.id === parseInt(productoIngresado)){
+				return true
+			}
+		})
+
+		cantidad = prompt("Cuantos desea?")
+		subtotal += cantidad * productoSeleccionado.precio
+
+		productoIngresado = prompt("Ingrese codigo de producto \n si no quiere ingresar mas productos, ingrese s")
 	}
 	return subtotal;
 }
@@ -49,7 +44,13 @@ function aplicarDescuentoSiCorresponde(subtotal) {
 	return total
 }
 
-const subtotal = calcularSubtotal()
+const productos = [
+	{id: 1, nombre: "Collar", precio: 15, stock: 5}, 
+	{id: 2, nombre: "Jabon", precio: 4, stock: 0},
+	{id: 3, nombre: "alimento", precio: 26, stock: 4}
+];
+
+const subtotal = calcularSubtotal(productos)
 console.log("El subtotal es " + subtotal)
 
 const total = aplicarDescuentoSiCorresponde(subtotal)
