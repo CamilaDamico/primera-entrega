@@ -3,7 +3,6 @@ function obtenerProductosEnStock (productos){
 		if (prod.stock > 0){
 			return true
 		}
-
 	})
 	return productosEnStock;
 } 
@@ -11,17 +10,24 @@ function obtenerProductosEnStock (productos){
 function calcularSubtotal (productos) {
 	const productosEnStock = obtenerProductosEnStock(productos)
 
-	for (const producto of productosEnStock){
+/* 	for (const producto of productosEnStock){
 		console.log(`id: ${producto.id}, producto: ${producto.nombre}, precio: $${producto.precio}`)
-	}
+	} */
 
 	let subtotal = 0;
 	let cantidad = 0;
+	let carrito = []
 
-	let productoIngresado = prompt("Ingrese codigo de producto")
+	let textoAMostrar = ''
+	productosEnStock.forEach(prod => {
+		textoAMostrar += `${prod.id}. ${prod.nombre}, precio: $${prod.precio} \n`
+	})
+
+	let productoIngresado = prompt(
+		"Ingrese codigo de producto: " + "\n" + textoAMostrar
+	)
 
 	while(productoIngresado !== "s") {
-		
 		let productoSeleccionado = productosEnStock.find((prod) =>{
 			if (prod.id === parseInt(productoIngresado)){
 				return true
@@ -29,10 +35,22 @@ function calcularSubtotal (productos) {
 		})
 
 		cantidad = prompt("Cuantos desea?")
-		subtotal += cantidad * productoSeleccionado.precio
 
-		productoIngresado = prompt("Ingrese codigo de producto \n si no quiere ingresar mas productos, ingrese s")
+		carrito.push({
+			precio: productoSeleccionado.precio,
+			cantidad: cantidad
+		})
+
+		productoIngresado = prompt( 
+			"Ingrese codigo de producto: \n (si no quiere ingresar mas productos, ingrese s) \n" + textoAMostrar
+		)
 	}
+
+	carrito.map(function (producto) {
+		subtotal += producto.precio * producto.cantidad
+
+	})
+
 	return subtotal;
 }
 
@@ -47,7 +65,7 @@ function aplicarDescuentoSiCorresponde(subtotal) {
 const productos = [
 	{id: 1, nombre: "Collar", precio: 15, stock: 5}, 
 	{id: 2, nombre: "Jabon", precio: 4, stock: 0},
-	{id: 3, nombre: "alimento", precio: 26, stock: 4}
+	{id: 3, nombre: "Alimento", precio: 26, stock: 4}
 ];
 
 const subtotal = calcularSubtotal(productos)
